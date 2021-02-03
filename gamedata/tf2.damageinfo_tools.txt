@@ -1,0 +1,23 @@
+"Games"
+{
+	"tf"
+	{
+		"Signatures"
+		{
+			"CTFRadiusDamageInfo::CalculateFalloff()"
+			{
+				// contains unique xref "mult_dmg_falloff"
+				"library"	"server"
+				"linux"		"@_ZN19CTFRadiusDamageInfo16CalculateFalloffEv"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8B\x0E"
+			}
+			"CTFGameRules::RadiusDamage(CTFRadiusDamageInfo&)"
+			{
+				// contains unique xref "add_health_on_radius_damage"
+				"library"	"server"
+				"linux"		"@_ZN12CTFGameRules12RadiusDamageER19CTFRadiusDamageInfo"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x24\x08\x00\x00"
+			}
+		}
+	}
+}

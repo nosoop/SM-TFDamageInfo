@@ -1,0 +1,44 @@
+classname = "CTFRadiusDamageInfo"
+size = 40
+
+[properties.m_dmgInfo]
+type = "CTakeDamageInfo"
+offset = 0
+writable = true
+
+[properties.VecSrc]
+type = "float"
+length = 3
+offset = 4
+stride = 4
+writable = true
+
+[properties.m_flRadius]
+type = "float"
+offset = 16
+writable = true
+
+[properties.m_pEntityIgnore]
+type = "Address"
+offset = 20
+writable = true
+
+[properties.m_flRJRadius]
+type = "float"
+offset = 24
+writable = true
+
+[properties.m_flForceScale]
+type = "float"
+offset = 28
+writable = true
+
+[properties.m_pEntityTarget]
+type = "Address"
+offset = 32
+writable = true
+
+[properties.m_flFalloff]
+type = "float"
+offset = 36
+writable = true

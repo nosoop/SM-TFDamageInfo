@@ -1,0 +1,108 @@
+classname = "CTakeDamageInfo"
+size = 0x68
+
+[properties.DamageForce]
+type = "float"
+offset = 0x0
+length = 3
+stride = 4
+writable = true
+
+[properties.DamagePosition]
+type = "float"
+offset = 0xC
+length = 3
+stride = 4
+writable = true
+
+[properties.ReportedPosition]
+type = "float"
+offset = 0x18
+length = 3
+stride = 4
+writable = true
+
+[properties.m_hInflictor]
+type = "int"
+offset = 0x24
+writable = true
+
+[properties.m_hAttacker]
+type = "int"
+offset = 0x28
+writable = true
+
+[properties.m_hWeapon]
+type = "int"
+offset = 0x2C
+writable = true
+
+[properties.m_flDamage]
+type = "float"
+offset = 0x30
+writable = true
+
+[properties.m_flMaxDamage]
+type = "float"
+offset = 0x34
+writable = true
+
+[properties.m_flBaseDamage]
+type = "float"
+offset = 0x38
+writable = true
+
+[properties.m_bitsDamageType]
+type = "int"
+offset = 0x3C
+writable = true
+
+[properties.m_iDamageCustom]
+type = "int"
+offset = 0x40
+writable = true
+
+[properties.m_iDamageStats]
+type = "int"
+offset = 0x44
+writable = true
+
+[properties.m_iAmmoType]
+type = "int"
+offset = 0x48
+writable = true
+
+[properties.m_iDamagedOtherPlayers]
+type = "int"
+offset = 0x4C
+writable = true
+
+[properties.m_iPlayerPenetrationCount]
+type = "int"
+offset = 0x50
+writable = true
+
+[properties.m_flDamageBonus]
+type = "float"
+offset = 0x54
+writable = true
+
+[properties.m_hDamageBonusProvider]
+type = "int"
+offset = 0x58
+writable = true
+
+[properties.m_bForceFriendlyFire]
+type = "bool"
+offset = 0x5C
+writable = true
+
+[properties.m_flDamageForForce]
+type = "float"
+offset = 0x60
+writable = true
+
+[properties.m_eCritType]
+type = "int"
+offset = 0x64
+writable = true
