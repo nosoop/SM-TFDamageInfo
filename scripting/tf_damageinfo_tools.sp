@@ -14,13 +14,13 @@
 #include <classdefs/take_damage_info.sp>
 #include <classdefs/tf_radius_damage_info.sp>
 
-#define PLUGIN_VERSION "0.0.0"
+#define PLUGIN_VERSION "0.1.0"
 public Plugin myinfo = {
 	name = "[TF2] DamageInfo Tools",
 	author = "nosoop",
 	description = "Library to generate damage events",
 	version = PLUGIN_VERSION,
-	url = "https://github.com/nosoop"
+	url = "https://github.com/nosoop/SM-TFDamageInfo"
 }
 
 #define FLT_MAX view_as<float>(0x7f7fffff)
