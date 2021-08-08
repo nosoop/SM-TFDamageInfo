@@ -49,13 +49,13 @@ methodmap {{classname}}{{#inherits}} < {{inherits}}{{/inherits}} {
 	}
 {{/length}}
 {{#length}} {{! This is used for accessing array variables. }}
-	public void Get{{name}}({{type}} value[{{length}}]) {
+	public void GetArray_{{name}}({{type}} value[{{length}}]) {
 		for (int i; i < {{length}}; i++) {
 			value[i] = view_as<{{type}}>(LoadFromAddress(this.Address + view_as<Address>({{offset}} + ({{stride}} * i)), NumberType_Int32));
 		}
 	}
 {{#writable}}
-	public void Set{{name}}(const {{type}} value[{{length}}]) {
+	public void SetArray_{{name}}(const {{type}} value[{{length}}]) {
 		for (int i; i < {{length}}; i++) {
 			StoreToAddress(this.Address + view_as<Address>({{offset}} + ({{stride}} * i)), view_as<any>(value[i]), NumberType_Int32);
 		}

@@ -1,46 +1,62 @@
 #!/usr/bin/python3
 
-import toml
+import dissect.cstruct
+import dissect.cstruct.types.base
 import chevron
 import pathlib
 import argparse
 
 def transform_class_definition(data):
-	# given a class definition TOML file, returns a dict appropriate for the class definition template
+	# given a parsed dissect.cstruct.types.structure.Structure,
+	# returns a dict appropriate for the class definition template
 	
-	# get top-level keyvalues
-	output = {
-		k: v for k, v in data.items() if k in ('classname', 'inherits', 'sourcefile', 'size')
+	# type mappings: 'c_type' -> ('sp_type', 'NumberType')
+	type_mapping = {
+		'int32': ('int', 'NumberType_Int32'),
+		'uint8': ('bool', 'NumberType_Int8'),
 	}
 	
-	# flattens properties subdicts into list and attaches the property name
-	output['properties'] = [
-		{ 'name': key, **value }
-		for key, value in definition.get('properties', {}).items()
-		if isinstance(value, dict)
-	]
+	output = {
+		'classname': data.name,
+		'size': len(data),
+		'properties': []
+	}
 	
-	output['decl_variables'] = []
-	for i, prop in enumerate(output.get('properties', [])):
-		prop['type'] = prop.get('type', 'int')
+	for field in filter(lambda f: f.name != '__padding', data.fields):
+		property = {
+			'name': field.name,
+			'offset': field.offset,
+			'writable': True,
+		}
 		
-		# inlined values return the address interpreted as the type, instead of dereferencing
-		# this is indicated by the '@' prefix for type
-		# I prefer this over using pointer notation for all the primitive members
-		if prop.get('type', '').startswith('@'):
-			prop['inline'] = True
-			prop['type'] = prop['type'].lstrip('@')
+		if isinstance(field.type, dissect.cstruct.types.pointer.Pointer):
+			actual_type = field.type.type.name
+			property.update({
+				'size': 'NumberType_Int32',
+				'type': actual_type if actual_type != 'void' else 'Address',
+			})
+		elif isinstance(field.type, dissect.cstruct.types.base.RawType):
+			alias_type, mem_size = type_mapping.get(field.type.name, (field.type.name, 'NumberType_Int32'))
+			
+			property.update({
+				'size': mem_size,
+				'type': alias_type,
+			})
+		elif isinstance(field.type, dissect.cstruct.types.base.Array):
+			field_array = field.type
+			alias_type, mem_size = type_mapping.get(
+				field_array.type.name,
+				(field_array.type.name, 'NumberType_Int32')
+			)
+			
+			property.update({
+				'size': mem_size,
+				'type': alias_type,
+				'length': field.type.count,
+				'stride': len(field_array.type)
+			})
 		
-		# declvar entries are treated as symbols that need variable declarations
-		if prop.get('declvar', False):
-			output['decl_variables'].append({ 'var': prop.get('offset') })
-		
-		if 'size' not in prop:
-			inferred_size = {
-				"bool": "NumberType_Int8",
-			}
-			prop['size'] = inferred_size.get(prop['type'], "NumberType_Int32")
-		output['properties'][i] = prop
+		output['properties'].append(property)
 	
 	return output
 
@@ -49,15 +65,18 @@ if __name__ == '__main__':
 			description = "Takes a Mustache template and some data and generates an output file")
 	
 	parser.add_argument('template', help = "Template to use", type = pathlib.Path)
-	parser.add_argument('data', help = "TOML definition file", type = pathlib.Path)
+	parser.add_argument('definition', help = "Definitions to parse", type = pathlib.Path)
+	parser.add_argument('type', help = "Type to extract")
 	parser.add_argument('output', help = "Output file", type = pathlib.Path)
 	
 	args = parser.parse_args()
 	
-	with args.template.open('rt') as f:
+	with args.template.open('rt') as f, args.definition.open('rt') as d:
 		template = f.read()
-		definition = toml.load(args.data)
-		definition['sourcefile'] = args.data.stem
-		result = chevron.render(template, transform_class_definition(definition))
+		
+		cparser = dissect.cstruct.cstruct(pointer = 'uint32', align = True)
+		cparser.load(d.read())
+		
+		result = chevron.render(template, transform_class_definition(cparser.typedefs[args.type]))
 		with args.output.open('wt') as g:
 			g.write(result)
