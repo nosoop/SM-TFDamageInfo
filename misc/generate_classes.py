@@ -19,13 +19,22 @@ def transform_class_definition(data):
 	output = {
 		'classname': data.name,
 		'size': len(data),
-		'properties': []
+		'properties': [],
+		'decl_variables': [],
 	}
 	
 	for field in filter(lambda f: f.name != '__padding', data.fields):
+		var_ref_name = f'offs_{data.name}_{field.name}'
+		
+		# provide every class name as a variable in case we'd like to import it from gamedata
+		output['decl_variables'].append({
+			'var': var_ref_name,
+			'assign': str(field.offset),
+		})
+		
 		property = {
 			'name': field.name,
-			'offset': field.offset,
+			'offset': var_ref_name,
 			'writable': True,
 		}
 		
@@ -35,6 +44,7 @@ def transform_class_definition(data):
 				'size': 'NumberType_Int32',
 				'type': actual_type if actual_type != 'void' else 'Address',
 			})
+		# TODO if struct it should be treated as inline
 		elif isinstance(field.type, dissect.cstruct.types.base.RawType):
 			alias_type, mem_size = type_mapping.get(field.type.name, (field.type.name, 'NumberType_Int32'))
 			
