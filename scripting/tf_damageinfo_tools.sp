@@ -107,9 +107,9 @@ public int Native_TakeDamageInfoCreate(Handle plugin, int nParams) {
 	damageInfo.m_iDamageCustom = damagecustom;
 
 	damageInfo.m_flMaxDamage = damage;
-	damageInfo.SetArray_m_vecDamageForce(damageForce);
-	damageInfo.SetArray_m_vecDamagePosition(damagePosition);
-	damageInfo.SetArray_m_vecReportedPosition(reportedPosition);
+	damageInfo.m_vecDamageForce.Set(damageForce);
+	damageInfo.m_vecDamagePosition.Set(damagePosition);
+	damageInfo.m_vecReportedPosition.Set(reportedPosition);
 	damageInfo.m_iAmmoType = -1;
 	damageInfo.m_iDamagedOtherPlayers = 0;
 	damageInfo.m_iPlayerPenetrationCount = 0;
@@ -146,7 +146,7 @@ public int Native_RadiusDamageInfoCreate(Handle plugin, int nParams) {
 	CTFRadiusDamageInfo radiusInfo = CTFRadiusDamageInfo.FromAddress(radiusInfoData.Address);
 	
 	radiusInfo.m_dmgInfo = CTakeDamageInfo.FromAddress(damageInfoData.Address);
-	radiusInfo.SetArray_m_vecSource(vecSrcIn);
+	radiusInfo.m_vecSource.Set(vecSrcIn);
 	radiusInfo.m_flRadius = radius;
 	radiusInfo.m_pEntityIgnore = IsValidEntity(ignoreEntity)? GetEntityAddress(ignoreEntity) : Address_Null;
 	radiusInfo.m_flRJRadius = blastJumpRadius;

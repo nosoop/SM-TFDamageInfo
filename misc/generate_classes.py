@@ -21,7 +21,10 @@ def transform_class_definition(data):
 		'size': len(data),
 		'properties': [],
 		'decl_variables': [],
+		'array_type_defs': [],
 	}
+	
+	array_type_defs = {}
 	
 	for field in filter(lambda f: f.name != '__padding', data.fields):
 		var_ref_name = f'offs_{data.name}_{field.name}'
@@ -59,14 +62,22 @@ def transform_class_definition(data):
 				(field_array.type.name, 'NumberType_Int32')
 			)
 			
+			array_type_internal_name = f'IMPL_internal_method_array_{alias_type}{field.type.count}'
 			property.update({
-				'size': mem_size,
-				'type': alias_type,
-				'length': field.type.count,
-				'stride': len(field_array.type)
+				'type': array_type_internal_name,
+				'inline': True,
 			})
+			
+			# store unique copies of arrays with internal name
+			array_type_defs[array_type_internal_name] = {
+				'type': alias_type,
+				'count': field.type.count,
+				'size': mem_size,
+				'stride': len(field_array.type),
+			}
 		
 		output['properties'].append(property)
+	output['array_type_defs'] = list(array_type_defs.values())
 	
 	return output
 
