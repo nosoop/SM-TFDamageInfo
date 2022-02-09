@@ -21,6 +21,10 @@ jobs:
       with:
         version: "1.10.x"
 
+    - name: Setup Build Dependencies
+      run: |
+        python3 -m pip install toml chevron
+
     - name: Setup Ninja Build
       uses: ashutoshvarma/setup-ninja@master
       with:
